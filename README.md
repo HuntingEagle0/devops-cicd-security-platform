@@ -1,101 +1,166 @@
 # DevOps CI/CD Security & Version Control Management System
 
-[![Development Pipeline](https://img.shields.io/badge/CI%2FCD-Development%20Pipeline-success?style=for-the-badge&logo=githubactions)](https://github.com/YOUR_GITHUB_USERNAME/devops-cicd-security-platform/actions)
-[![Production Pipeline](https://img.shields.io/badge/CI%2FCD-Production%20Pipeline-success?style=for-the-badge&logo=githubactions)](https://github.com/YOUR_GITHUB_USERNAME/devops-cicd-security-platform/actions)
-[![SonarQube Quality Gate](https://img.shields.io/badge/SonarQube-Quality%20Gate%3A%20Passed-success?style=for-the-badge&logo=sonarqube)](https://sonarcloud.io)
-[![OPA Validation](https://img.shields.io/badge/OPA-Policies%20Validated-success?style=for-the-badge&logo=openpolicyagent)](https://www.openpolicyagent.org/)
-
-## 📖 Project Overview
+## Project Overview
 
 This project implements a comprehensive DevOps workflow focusing on:
-1. **Linux Administration & User Management**
-2. **Git & GitHub Version Control Collaboration**
-3. **CI/CD Automation (GitHub Actions)**
-4. **SonarQube Code Quality Integration**
-5. **Open Policy Agent (OPA) Security Policy Enforcement**
 
-## 📂 Project Structure
+1. Linux Administration & User Management
+2. Git & GitHub Version Control Collaboration
+3. CI/CD Automation (GitHub Actions)
+4. SonarQube Code Quality Integration
+5. Open Policy Agent (OPA) Security Policy Enforcement
 
-```text
+
+## Project Structure
+
+```
 company-devops-platform/
-├── .github/
-│   └── workflows/
-│       ├── dev-pipeline.yml        # CI/CD for development branch
-│       └── prod-pipeline.yml       # CI/CD for production branch
+├── .github/workflows/
+│   ├── dev-pipeline.yml          # CI/CD for development branch
+│   └── prod-pipeline.yml         # CI/CD for production branch
 ├── configs/
-│   ├── deployment.yaml             # Kubernetes deployment manifest
-│   ├── pipeline.yaml               # Generic pipeline definition
-│   └── security.conf               # Security standards configuration
+│   ├── deployment.yaml           # Kubernetes deployment manifest
+│   ├── pipeline.yaml             # Pipeline configuration
+│   └── security.conf             # Security configuration
+├── deployments/
+│   ├── staging.yaml              # Staging deployment manifest
+│   └── production.yaml           # Production deployment manifest
 ├── policies/
-│   ├── container.rego              # OPA: Image tagging & privilege limits
-│   ├── deployment.rego             # OPA: Operational best practices
-│   └── security.rego               # OPA: Root user restriction & host networks
+│   ├── deployment.rego           # Deployment validation policy
+│   ├── security.rego             # Security validation policy
+│   └── container.rego            # Container validation policy
 ├── reports/
 │   ├── sonarqube/
-│   │   └── scan-report.json        # Static analysis results
-│   └── opa-validation-report.json  # Policy compliance results
+│   │   └── scan-report.json      # SonarQube analysis report
+│   └── opa-validation-report.json # OPA validation report
+├── artifacts/
+│   └── build-report.json         # Build artifacts and reports
 ├── logs/
-│   └── deployment.log              # Automated deployment execution logs
-├── linux_setup.sh                  # Automation script for Linux/OS Setup
-├── git_workflow_demo.sh            # Automation script for Git tasks
-└── sonar-project.properties        # SonarQube analysis configuration
+│   └── deployment.log            # Deployment logs
+├── linux_setup.sh                # Linux administration script
+├── git_workflow_demo.sh          # Git workflow demonstration script
+├── validate_policies.sh          # OPA policy validation script
+├── sonar-project.properties      # SonarQube configuration
+└── README.md                     # Project documentation
 ```
 
-## 🛠️ Phase 1: Linux Administration
 
-The `linux_setup.sh` script automates the creation of the server environment:
-- Creates users: `developer`, `tester`, `devopsadmin`
-- Creates groups: `developers`, `operations`
-- Configures directory permissions & ACLs.
-- Automates configuration backups with timestamping.
-- Manages background processes and system archives.
+## Phase 1: Linux Administration
 
-**Usage (on a Linux Server/WSL):**
-```bash
+The linux_setup.sh script automates the following:
+
+- Creates users: developer, tester, devopsadmin
+- Creates groups: developers, operations
+- Assigns developer and tester to developers group
+- Assigns devopsadmin to operations group
+- Configures read/write access for developers group
+- Configures full administrative permissions for devopsadmin
+- Creates configuration files: deployment.yaml, pipeline.yaml, security.conf
+- Copies configuration files into backup directory with timestamps
+- Displays complete project structure
+- Creates a background process and terminates it
+- Displays running processes and parent-child relationships
+- Creates a compressed archive of the entire project directory
+
+Usage (on Linux):
+```
 sudo bash linux_setup.sh
 ```
 
-## 🌿 Phase 2: Git & GitHub Branching Strategy
 
-We follow a robust branching strategy to ensure code quality and deployment safety. Run `bash git_workflow_demo.sh` to simulate and view the entire workflow locally.
+## Phase 2: Git & GitHub Branching Strategy
 
-### Branching Model
-- **`main` / `master`**: Source of truth. Reflects the currently released state.
-- **`development`**: Integration branch. All feature branches merge here. Triggers the automated test and security scanning CI/CD pipeline.
-- **`staging`**: Pre-production environment. Used for final QA testing before production deployment.
-- **`production`**: Production deployment branch. Triggers the production CI/CD pipeline.
+### Branches
+
+- main: Source of truth, reflects the currently released state
+- development: Integration branch, all features merge here, triggers the automated CI/CD pipeline
+- staging: Pre-production environment, used for final QA testing before production deployment
+- production: Production deployment branch, triggers the production CI/CD pipeline
 
 ### Git Features Demonstrated
-The `git_workflow_demo.sh` script actively demonstrates:
-- Conflict resolution during merges.
-- Temporary shelving of work (`git stash`).
-- Moving specific commits (`git cherry-pick`).
-- Linearizing history (`git rebase`).
-- Undoing changes (`git revert` & `git reset`).
-- Recovering accidentally deleted files.
 
-## 🚀 Phase 3 & 4: CI/CD Pipeline & SonarQube
+The git_workflow_demo.sh script demonstrates:
 
-Implemented using **GitHub Actions**, the pipeline automatically triggers on pushes to specific branches.
+- Merge conflict simulation and resolution between development and staging branches
+- git stash: Temporary shelving of work
+- git cherry-pick: Moving specific commits between branches
+- git rebase: Linearizing history
+- git revert: Undoing changes safely
+- git reset: Removing commits from history
+- File recovery: Restoring accidentally deleted files using Git recovery features
 
-### Development Pipeline Stages
-1. **Source Checkout**: Fetches the latest code.
-2. **Build**: Compiles artifacts.
-3. **Test**: Executes Unit & Integration tests.
-4. **Security Validation (SonarQube)**:
-   - Scans YAML, shell scripts, and source code.
-   - Generates reports for bugs, vulnerabilities, and code smells.
-   - Validates against the Quality Gate (fails pipeline if not met).
-5. **Deployment**: Deploys to the development Kubernetes cluster. Automatically rolls back if the deployment fails.
 
-## 🛡️ Phase 5: Open Policy Agent (OPA)
+## Phase 3: CI/CD Pipeline (GitHub Actions)
 
-Before any deployment manifest is applied, it is validated against OPA policies using `conftest`.
-- **Deployment Validations**: Enforces resource limits, replicas, liveness/readiness probes, and proper namespaces.
-- **Security Validations**: Prevents containers from running as `root`, disables privilege escalation, and enforces read-only file systems.
-- **Container Validations**: Enforces specific image version tags (no `:latest`), prevents Docker socket mounting, and restricts dangerous capabilities (`NET_ADMIN`, `SYS_ADMIN`).
+### Development Pipeline (dev-pipeline.yml)
 
-If a policy violation occurs, the pipeline fails, preventing insecure configurations from being deployed.
+Triggers automatically on push to development branch.
 
----
-*Created as part of the DevOps CI/CD Security & Version Control Management System requirements.*
+Stages:
+1. Source Checkout: Fetches the latest code
+2. Build: Compiles artifacts
+3. Test: Executes unit and integration tests
+4. Security Validation: Runs SonarQube scan and OPA policy checks
+5. Deployment: Deploys to development environment with rollback on failure
+
+### Production Pipeline (prod-pipeline.yml)
+
+Triggers on push to production branch.
+
+Stages:
+1. Pre-flight Checks: Validates deployment configuration
+2. Build and Test: Compiles and runs tests
+3. Security Gate: SonarQube analysis and OPA policy validation
+4. Deploy to Production: Deploys with automatic rollback on failure
+
+### Environment Variables and Secrets
+
+- SONAR_TOKEN: SonarQube authentication token
+- SONAR_HOST_URL: SonarQube server URL
+- DOCKER_USERNAME: Docker Hub username
+- DOCKER_PASSWORD: Docker Hub password
+
+Deployment artifacts are stored in the artifacts/ directory.
+
+
+## Phase 4: SonarQube Integration
+
+SonarQube is integrated into the CI/CD pipeline to scan:
+
+- YAML configuration files
+- Shell scripts
+- Application source code
+
+Reports are generated for:
+- Bugs
+- Vulnerabilities
+- Code smells
+- Duplicated code
+
+Quality gate validation is configured. The pipeline fails automatically if the quality gate is not met. Reports are saved in reports/sonarqube/.
+
+
+## Phase 5: Open Policy Agent (OPA)
+
+OPA policies are validated using Conftest. Three policy files enforce:
+
+### Deployment Validation (policies/deployment.rego)
+- Resource limits and requests must be defined
+- Minimum 2 replicas for high availability
+- Liveness and readiness probes required
+- Proper namespace (not default)
+- RollingUpdate strategy required
+
+### Security Validation (policies/security.rego)
+- Containers must not run as root
+- Privilege escalation must be disabled
+- Read-only root filesystem enforced
+- Host network and host PID namespace restricted
+
+### Container Validation (policies/container.rego)
+- Image version tags must be explicit (no latest tag)
+- Privileged containers are not allowed
+- Docker socket mounting is blocked
+- Dangerous capabilities (NET_ADMIN, SYS_ADMIN) are restricted
+
+If any policy is violated, the deployment is blocked. Validation reports are saved in reports/.
