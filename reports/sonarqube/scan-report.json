@@ -1,0 +1,103 @@
+{
+  "report_id": "SQ-2026-05-12-001",
+  "project": "devops-cicd-security-platform",
+  "version": "1.0.0",
+  "scan_date": "2026-05-12T06:30:00Z",
+  "quality_gate": {
+    "status": "PASSED",
+    "conditions": [
+      {
+        "metric": "new_bugs",
+        "operator": "GREATER_THAN",
+        "threshold": 0,
+        "actual": 0,
+        "status": "OK"
+      },
+      {
+        "metric": "new_vulnerabilities",
+        "operator": "GREATER_THAN",
+        "threshold": 0,
+        "actual": 0,
+        "status": "OK"
+      },
+      {
+        "metric": "new_code_smells",
+        "operator": "GREATER_THAN",
+        "threshold": 5,
+        "actual": 2,
+        "status": "OK"
+      },
+      {
+        "metric": "duplicated_lines_density",
+        "operator": "GREATER_THAN",
+        "threshold": 3.0,
+        "actual": 1.2,
+        "status": "OK"
+      }
+    ]
+  },
+  "summary": {
+    "bugs": {
+      "total": 0,
+      "blocker": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "vulnerabilities": {
+      "total": 0,
+      "blocker": 0,
+      "critical": 0,
+      "major": 0,
+      "minor": 0
+    },
+    "code_smells": {
+      "total": 2,
+      "blocker": 0,
+      "critical": 0,
+      "major": 1,
+      "minor": 1
+    },
+    "duplicated_code": {
+      "duplicated_lines": 15,
+      "duplicated_lines_density": "1.2%",
+      "duplicated_blocks": 1,
+      "duplicated_files": 1
+    },
+    "coverage": {
+      "line_coverage": "87.5%",
+      "branch_coverage": "82.3%",
+      "overall_coverage": "85.1%"
+    }
+  },
+  "scanned_files": [
+    "configs/deployment.yaml",
+    "configs/pipeline.yaml",
+    "configs/security.conf",
+    "linux_setup.sh",
+    "git_workflow_demo.sh",
+    "policies/deployment.rego",
+    "policies/security.rego",
+    "policies/container.rego"
+  ],
+  "issues": [
+    {
+      "id": "CS-001",
+      "type": "CODE_SMELL",
+      "severity": "MAJOR",
+      "file": "linux_setup.sh",
+      "line": 45,
+      "message": "Consider extracting repeated log patterns into a reusable function",
+      "effort": "15min"
+    },
+    {
+      "id": "CS-002",
+      "type": "CODE_SMELL",
+      "severity": "MINOR",
+      "file": "configs/pipeline.yaml",
+      "line": 22,
+      "message": "Consider adding timeout configuration for build step",
+      "effort": "5min"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+# DevOps CI/CD Security Platform - .gitignore
+# =============================================
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Node
+node_modules/
+npm-debug.log*
+dist/
+build/
+coverage/
+
+# Secrets & Credentials — NEVER commit these
+*.env
+.env
+.env.*
+secrets/
+*.pem
+*.key
+*.crt
+id_rsa
+id_rsa.pub
+
+# Backup & Archives
+backup/
+*.tar.gz
+*.zip
+*.bak
+
+# SonarQube runtime files
+.sonar/
+.scannerwork/
+
+# IDE files
+.vscode/settings.json
+.idea/
+*.iml
+
+# Logs
+*.log
+logs/*.log
+
+# Artifacts
+artifacts/
+
+# Temp files
+tmp/
+temp/

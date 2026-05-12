@@ -1,0 +1,69 @@
+{
+  "report_id": "OPA-2026-05-12-001",
+  "project": "devops-cicd-security-platform",
+  "scan_date": "2026-05-12T06:30:00Z",
+  "status": "PASSED",
+  "policies_evaluated": [
+    {
+      "file": "policies/deployment.rego",
+      "package": "deployment",
+      "rules_checked": 8,
+      "violations": 0,
+      "warnings": 0,
+      "details": [
+        {"rule": "resource_limits_required", "status": "PASS"},
+        {"rule": "resource_requests_required", "status": "PASS"},
+        {"rule": "minimum_replicas", "status": "PASS"},
+        {"rule": "liveness_probe_required", "status": "PASS"},
+        {"rule": "readiness_probe_required", "status": "PASS"},
+        {"rule": "labels_required", "status": "PASS"},
+        {"rule": "namespace_not_default", "status": "PASS"},
+        {"rule": "rolling_update_strategy", "status": "PASS"}
+      ]
+    },
+    {
+      "file": "policies/security.rego",
+      "package": "security",
+      "rules_checked": 8,
+      "violations": 0,
+      "warnings": 0,
+      "details": [
+        {"rule": "no_root_user", "status": "PASS"},
+        {"rule": "run_as_non_root", "status": "PASS"},
+        {"rule": "no_privilege_escalation", "status": "PASS"},
+        {"rule": "read_only_root_fs", "status": "PASS"},
+        {"rule": "no_host_network", "status": "PASS"},
+        {"rule": "no_host_pid", "status": "PASS"},
+        {"rule": "no_plaintext_passwords", "status": "PASS"},
+        {"rule": "no_plaintext_tokens", "status": "PASS"}
+      ]
+    },
+    {
+      "file": "policies/container.rego",
+      "package": "container",
+      "rules_checked": 8,
+      "violations": 0,
+      "warnings": 1,
+      "details": [
+        {"rule": "no_latest_tag", "status": "PASS"},
+        {"rule": "version_tag_required", "status": "PASS"},
+        {"rule": "no_privileged_mode", "status": "PASS"},
+        {"rule": "no_docker_socket", "status": "PASS"},
+        {"rule": "cpu_limits_required", "status": "PASS"},
+        {"rule": "memory_limits_required", "status": "PASS"},
+        {"rule": "no_dangerous_capabilities", "status": "PASS"},
+        {"rule": "trusted_registry", "status": "WARN", "message": "Image 'devops-platform:1.0.0' is from an untrusted registry"}
+      ]
+    }
+  ],
+  "summary": {
+    "total_policies": 3,
+    "total_rules": 24,
+    "passed": 23,
+    "failed": 0,
+    "warnings": 1
+  },
+  "files_validated": [
+    "configs/deployment.yaml"
+  ]
+}

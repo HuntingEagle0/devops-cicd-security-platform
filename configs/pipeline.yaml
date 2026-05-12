@@ -1,0 +1,94 @@
+# CI/CD Pipeline Configuration
+# Project: devops-cicd-security-platform
+# Version: 1.0.0
+
+pipeline:
+  name: devops-cicd-security-platform
+  version: "1.0.0"
+  trigger:
+    branches:
+      - development
+      - staging
+      - production
+
+stages:
+  - name: source-checkout
+    description: "Checkout source code from repository"
+    timeout: 5m
+    steps:
+      - checkout: self
+        fetchDepth: 0
+
+  - name: build
+    description: "Build application artifacts"
+    timeout: 15m
+    steps:
+      - script: |
+          echo "Installing dependencies..."
+          npm ci --production=false
+          echo "Building application..."
+          npm run build
+        displayName: "Build Application"
+
+  - name: test
+    description: "Run unit and integration tests"
+    timeout: 20m
+    steps:
+      - script: |
+          echo "Running unit tests..."
+          npm run test:unit
+          echo "Running integration tests..."
+          npm run test:integration
+        displayName: "Execute Tests"
+      - publishTestResults:
+          testResultsFormat: "JUnit"
+          testResultsFiles: "**/test-results/*.xml"
+
+  - name: security-validation
+    description: "Run security scans and policy checks"
+    timeout: 30m
+    steps:
+      - script: |
+          echo "Running SonarQube analysis..."
+          sonar-scanner
+        displayName: "SonarQube Scan"
+      - script: |
+          echo "Running OPA policy validation..."
+          conftest test configs/ --policy policies/
+        displayName: "OPA Policy Check"
+
+  - name: deployment
+    description: "Deploy to target environment"
+    timeout: 15m
+    condition: succeeded()
+    steps:
+      - script: |
+          echo "Deploying to environment..."
+          kubectl apply -f configs/deployment.yaml
+        displayName: "Deploy Application"
+
+environment:
+  variables:
+    NODE_ENV: "production"
+    LOG_LEVEL: "info"
+    SONAR_HOST_URL: "http://localhost:9000"
+  secrets:
+    - SONAR_TOKEN
+    - DOCKER_PASSWORD
+    - KUBE_CONFIG
+
+notifications:
+  on_success:
+    - email
+    - slack
+  on_failure:
+    - email
+    - slack
+    - pagerduty
+
+artifacts:
+  paths:
+    - "artifacts/"
+    - "reports/"
+  retention:
+    days: 30
